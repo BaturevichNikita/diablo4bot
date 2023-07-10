@@ -1,0 +1,35 @@
+{
+  "name": "diablo4bot",
+  "version": "1.0.0",
+  "description": "Diablo 4 events telegram bot",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "ENV=${TOKEN:-TOKEN} sls package --verbose",
+    "deploy": "ENV=${TOKEN:-TOKEN} sls deploy --verbose",
+    "remove": "sls remove --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BaturevichNikita/diablo4bot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BaturevichNikita/diablo4bot/issues"
+  },
+  "homepage": "https://github.com/BaturevichNikita/diablo4bot#readme",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.119",
+    "aws-sdk": "^2.1413.0",
+    "serverless-plugin-typescript": "^2.1.5",
+    "typescript": "^5.1.6"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.4.0"
+  }
+}
