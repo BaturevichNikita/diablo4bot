@@ -1,0 +1,6 @@
+webhook:
+  handler: src/handlers/webhook/index.handler
+  events:
+    - http:
+        path: webhook
+        method: post

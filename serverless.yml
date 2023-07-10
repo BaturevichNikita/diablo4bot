@@ -1,0 +1,24 @@
+service: diablo-4-tg-bot
+
+frameworkVersion: '>=3.19.0'
+
+plugins:
+  - serverless-plugin-typescript
+
+package:
+  exclude:
+    - node_modules/puppeteer/.local-chromium/**
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: eu-north-1
+  stackName: ${self:service}
+  environment:
+    TOKEN: ${env:TOKEN}
+
+functions:
+  - ${file(./serverless/functions/webhook.yml)}
+
+resources:
+  - ${file(./serverless/resources/transform.yml)}
