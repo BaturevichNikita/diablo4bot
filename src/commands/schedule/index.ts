@@ -31,7 +31,6 @@ export const scheduleCommand = async (chatId: string) => {
     const text = [nextWorldBoss, nextLegion, nextHelltide].join('\n');
     await tgBot.sendMessage(chatId, text);
   } catch (error) {
-    console.log(error);
     await tgBot.sendMessage(chatId, 'Something went wrong...');
   }
 };
