@@ -1,8 +1,7 @@
 import { Handler, APIGatewayEvent } from 'aws-lambda';
-import { tgBot } from '../../services/telegram';
 import { TgBody } from '../../types/telegram';
 import { makeResponse } from '../../utils/response';
-import { routes } from './routing';
+import { Paths, RoutingMap } from './routing';
 
 export const handler: Handler = async (event: APIGatewayEvent) => {
   try {
@@ -14,14 +13,12 @@ export const handler: Handler = async (event: APIGatewayEvent) => {
       chat: { id },
     } = body.message;
 
-    const route = Object.keys(routes).find((route) => text.startsWith(route));
-    const command = route && routes[route];
-
+    const command = RoutingMap.get(text.trim()) || RoutingMap.get(Paths.ECHO);
     if (!command) {
-      await tgBot.sendMessage(id, `You sent: ${text}`);
-    } else {
-      await command(id);
+      throw new Error('No command is associated with the specified path.');
     }
+
+    await command(id, text);
 
     return makeResponse(event);
   } catch (error) {

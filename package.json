@@ -4,7 +4,7 @@
   "description": "Diablo 4 events telegram bot",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo TODO: write unit tests!",
     "build": "ENV=${TOKEN:-TOKEN} sls package --verbose",
     "deploy": "ENV=${TOKEN:-TOKEN} sls deploy --verbose",
     "remove": "sls remove --verbose"
