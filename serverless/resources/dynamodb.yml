@@ -1,0 +1,24 @@
+Resources:
+  SubscriptionsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ${self:custom.dynamodbSubscriptionsTableName}
+      AttributeDefinitions:
+        - AttributeName: chatId
+          AttributeType: S
+        - AttributeName: type
+          AttributeType: S
+        - AttributeName: boss
+          AttributeType: BOOL
+        - AttributeName: helltide
+          AttributeType: BOOL
+        - AttributeName: legion
+          AttributeType: BOOL
+      KeySchema:
+        - AttributeName: chatId
+          KeyType: HASH
+        - AttributeName: type
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
