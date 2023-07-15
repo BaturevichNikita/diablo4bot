@@ -5,16 +5,33 @@ frameworkVersion: '>=3.19.0'
 plugins:
   - serverless-plugin-typescript
 
+custom:
+  dynamodbSubscriptionsTableName: ${self:service}-subscriptions
+
 provider:
   name: aws
   runtime: nodejs18.x
   region: eu-north-1
   stackName: ${self:service}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: "arn:aws:dynamodb:${aws:region}:*:table/*"
   environment:
     TOKEN: ${env:TOKEN}
+    SUBSCRIPTION_TABLE_NAME: ${self:custom.dynamodbSubscriptionsTableName}
 
 functions:
   - ${file(./serverless/functions/webhook.yml)}
 
 resources:
   - ${file(./serverless/resources/transform.yml)}
+  - ${file(./serverless/resources/dynamodb.yml)}
