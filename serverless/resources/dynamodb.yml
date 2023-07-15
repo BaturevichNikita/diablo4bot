@@ -8,12 +8,6 @@ Resources:
           AttributeType: S
         - AttributeName: type
           AttributeType: S
-        - AttributeName: boss
-          AttributeType: BOOL
-        - AttributeName: helltide
-          AttributeType: BOOL
-        - AttributeName: legion
-          AttributeType: BOOL
       KeySchema:
         - AttributeName: chatId
           KeyType: HASH
