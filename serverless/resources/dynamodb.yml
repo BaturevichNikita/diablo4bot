@@ -5,13 +5,13 @@ Resources:
       TableName: ${self:custom.dynamodbSubscriptionsTableName}
       AttributeDefinitions:
         - AttributeName: chatId
-          AttributeType: S
-        - AttributeName: type
+          AttributeType: N
+        - AttributeName: eventType
           AttributeType: S
       KeySchema:
         - AttributeName: chatId
           KeyType: HASH
-        - AttributeName: type
+        - AttributeName: eventType
           KeyType: RANGE
       ProvisionedThroughput:
         ReadCapacityUnits: 5
