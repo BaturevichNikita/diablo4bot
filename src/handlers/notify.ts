@@ -8,6 +8,10 @@ export const handler = async () => {
   try {
     const [subscriptions, schedule] = await Promise.all([getSubscriptions(), getSchedule()]);
 
+    if (!schedule.length) {
+      throw new Error('Service temporarly unavailable...');
+    }
+
     const filteredEvents = schedule.filter(({ event, timestamp }) => shouldNotify(event, timestamp));
 
     const notifyPromises = subscriptions.reduce<Promise<any>[]>(
@@ -51,6 +55,6 @@ export const handler = async () => {
     return makeResponse({ status: 'Success' });
   } catch (error) {
     console.error(error);
-    return makeResponse({ status: 'Error' }, 400);
+    return makeResponse({ status: 'Warning' });
   }
 };

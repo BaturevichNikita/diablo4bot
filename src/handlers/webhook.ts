@@ -20,9 +20,9 @@ export const handler: Handler = async (event: APIGatewayEvent) => {
       await messageProcessor(body.message);
     }
 
-    return makeResponse(event);
+    return makeResponse({ status: 'Success', event });
   } catch (error) {
     console.error(error);
-    return makeResponse(event, 400);
+    return makeResponse({ status: 'Warning', event });
   }
 };

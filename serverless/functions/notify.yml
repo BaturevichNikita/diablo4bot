@@ -1,4 +1,13 @@
 notify:
   handler: src/handlers/notify.handler
   events:
-    - schedule: rate(5 minutes)
+    # - schedule:
+    #     method: scheduler
+    #     rate:
+    #       - cron(0/5 10-23 ? * * *)
+    #     timezone: Europe/Minsk
+    - schedule:
+        method: scheduler
+        rate:
+          - cron(0/5 10-23 ? * * *)
+        timezone: Asia/Tbilisi
