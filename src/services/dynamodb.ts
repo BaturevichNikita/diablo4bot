@@ -1,20 +1,12 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, UpdateCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, UpdateCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
 import { SUBSCRIPTION_TABLE_NAME } from '../config';
-import { Chat } from '../types/telegram';
+import { SubscriptionRecord, UpdateSubscriptionsPayload } from '../types/dynamodb';
 
-type SubscriptionPayload = {
-  chatId: Chat['id'];
-  eventType: 'non-season' | 'season';
-  event: {
-    key: string;
-    value: boolean;
-  };
-};
 const client = new DynamoDBClient({ region: 'eu-north-1' });
 const docClient = DynamoDBDocumentClient.from(client);
 
-export const updateItem = async ({ chatId, eventType, event }: SubscriptionPayload) => {
+export const updateSubscription = async ({ chatId, eventType, event }: UpdateSubscriptionsPayload) => {
   const ExpressionAttributeValues = {
     [`:${event.key}`]: event.value,
   };
@@ -32,4 +24,23 @@ export const updateItem = async ({ chatId, eventType, event }: SubscriptionPaylo
 
   const command = new UpdateCommand(params);
   return docClient.send(command);
+};
+
+export const getSubscriptions = async (): Promise<SubscriptionRecord[]> => {
+  const command = new ScanCommand({
+    TableName: SUBSCRIPTION_TABLE_NAME!,
+    FilterExpression: 'worldBoss = :worldBoss OR helltide = :helltide OR legion = :legion',
+    ExpressionAttributeValues: {
+      ':worldBoss': true,
+      ':helltide': true,
+      ':legion': true,
+    },
+    ConsistentRead: false,
+  });
+
+  const response = await docClient.send(command);
+  console.log(`${response.Count} items were found for notify`);
+
+  const resultItems = response.Items || [];
+  return resultItems as SubscriptionRecord[];
 };

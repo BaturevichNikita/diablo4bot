@@ -1,0 +1,4 @@
+notify:
+  handler: src/handlers/notify.handler
+  events:
+    - schedule: rate(5 minutes)
