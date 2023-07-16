@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 
 const get = async <T>(url: string, headers: { [key: string]: string }): Promise<AxiosResponse<T>> =>
-  axios.get(url, { headers });
+  axios.get(url, { headers, timeout: 1000 });
 
 const post = async <T>(
   url: string,
