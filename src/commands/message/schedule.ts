@@ -1,6 +1,7 @@
 import { getEvents } from '../../services/events';
 import { tgBot } from '../../services/telegram';
 import { Boss, Helltide, Legion } from '../../types/events';
+import { Command } from '../../types/routing';
 import { getFutureTimestamp, getTimeUntilEvent } from '../../utils/time';
 
 const getWorldBoss = ({ expectedName, expected, nextExpected }: Boss) =>
@@ -19,7 +20,7 @@ const getHelltide = ({ timestamp }: Helltide) => {
     : `Helltide is active! Time remaining: ${getTimeUntilEvent(active, active)}.`;
 };
 
-export const scheduleCommand = async (chatId: string) => {
+export const scheduleCommand: Command = async (chatId) => {
   try {
     const { data: events } = await getEvents();
     const { boss, helltide, legion } = events;
