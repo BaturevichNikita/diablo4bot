@@ -1,13 +1,15 @@
+export const getCurrentTime = (): number => Math.floor(Date.now() / 1000);
+
 export const getTimeUntilEvent = (expected: number, nextExpected: number) => {
-  const now = Date.now();
-  let timeDifference = expected * 1000 - now;
+  const currentTime = getCurrentTime();
+  let timeDifference = expected - currentTime;
 
   if (timeDifference <= 0) {
-    timeDifference = nextExpected * 1000 - now;
+    timeDifference = nextExpected - currentTime;
   }
 
-  const hours = Math.floor((timeDifference / (1000 * 60 * 60)) % 24);
-  const minutes = Math.floor((timeDifference / (1000 * 60)) % 60);
+  const hours = Math.floor((timeDifference / 3600) % 24);
+  const minutes = Math.floor((timeDifference / 60) % 60);
 
   const times: string[] = [];
 
@@ -18,11 +20,11 @@ export const getTimeUntilEvent = (expected: number, nextExpected: number) => {
     times.push(`${minutes} minute${minutes !== 1 ? 's' : ''}`);
   }
 
-  return times.join(', ').trim();
+  return times.length ? times.join(', ').trim() : 'less than minute';
 };
 
 export const getFutureTimestamp = (timestamp: number, hours: number, minutes: number) => {
   const futureDate = new Date(timestamp * 1000);
   futureDate.setHours(futureDate.getHours() + hours, futureDate.getMinutes() + minutes);
-  return futureDate.getTime() / 1000;
+  return Math.floor(futureDate.getTime() / 1000);
 };

@@ -31,6 +31,7 @@ provider:
 
 functions:
   - ${file(./serverless/functions/webhook.yml)}
+  - ${file(./serverless/functions/notify.yml)}
 
 resources:
   - ${file(./serverless/resources/transform.yml)}

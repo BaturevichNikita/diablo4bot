@@ -1,4 +1,4 @@
-import { updateItem } from '../../services/dynamodb';
+import { updateSubscription } from '../../services/dynamodb';
 import { tgBot } from '../../services/telegram';
 import { Command } from '../../types/routing';
 import { capitalize, convertToCamelCase } from '../../utils/text-formatter';
@@ -12,7 +12,7 @@ export const subscribeCommand: Command = async (id, data) => {
 
   console.log(`Subscribe on ${formattedSubscribeType} events`);
 
-  await updateItem({ chatId: id, eventType: 'non-season', event: { key: subscribeTypeDbKey, value: true } });
+  await updateSubscription({ chatId: id, eventType: 'non-season', event: { key: subscribeTypeDbKey, value: true } });
 
   await tgBot.sendMessage(id, `You were subscribed on ${formattedSubscribeType} events`);
 };
