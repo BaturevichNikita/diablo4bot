@@ -1,3 +1,4 @@
+import { updateItem } from '../../services/dynamodb';
 import { tgBot } from '../../services/telegram';
 import { Command } from '../../types/routing';
 import { capitalize, convertToCamelCase } from '../../utils/text-formatter';
@@ -9,7 +10,7 @@ export const unsubscribeCommand: Command = async (id, data) => {
   const formattedUnsubscribeType = capitalize(unsubscribeType);
   const subscribeTypeDbKey = convertToCamelCase(unsubscribeType);
 
-  console.log(`Unsubscribe on ${formattedUnsubscribeType} events`);
+  await updateItem({ chatId: id, eventType: 'non-season', event: { key: subscribeTypeDbKey, value: false } });
 
-  await tgBot.sendMessage(id, `You are going to disable notification about ${formattedUnsubscribeType} events`);
+  await tgBot.sendMessage(id, `You were unsubscribed from ${formattedUnsubscribeType} events`);
 };
