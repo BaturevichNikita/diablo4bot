@@ -1,8 +1,17 @@
-import { apiCall } from '../integration/api';
-import { Boss, Events, Helltide, Legion } from '../types/events';
+import { apiCall } from '../utils/api';
 import { HttpMethods } from '../types/http';
 import { CacheKeys, getCache, setCache } from '../utils/cache';
-import { getCurrentTime, getFutureTimestamp, getTimeUntilEvent } from '../utils/time';
+import { D4ArmoryResponse } from '../types/events/d4armory';
+import { MaxrollResponse } from '../types/events/maxroll';
+import { D4ArmoryProvider } from '../providers/d4armory';
+import { MaxrollProvider } from '../providers/maxroll';
+
+enum ProviderUrl {
+  D4_ARMORY = 'https://d4armory.io/api/events/recent',
+  MAXROLL = 'https://planners.maxroll.gg/d4/events',
+}
+
+type Provider = D4ArmoryProvider | MaxrollProvider;
 
 export type Schedule = {
   event: string;
@@ -10,44 +19,36 @@ export type Schedule = {
   timestamp: number;
 };
 
-const getEvents = async (): Promise<Events> => {
-  let result: Events;
-  try {
-    const { data } = await apiCall<Events>(HttpMethods.GET, 'https://d4armory.io/api/events/recent');
-    setCache(CacheKeys.EVENTS, data);
-    result = data;
-  } catch (err) {
-    console.warn(err.message);
-    result = getCache(CacheKeys.EVENTS);
-  }
-  return result;
+const initProviderInstance = async (url: ProviderUrl) => {
+  const { data } = await apiCall(HttpMethods.GET, url);
+  return ProviderUrl.D4_ARMORY === url
+    ? new D4ArmoryProvider(data as D4ArmoryResponse)
+    : new MaxrollProvider(data as MaxrollResponse);
 };
 
-const getWorldBoss = ({ expectedName, expected, nextExpected }: Boss) =>
-  `Next World Boss: ${expectedName} in ${getTimeUntilEvent(expected, nextExpected)}.`;
-
-const getLegion = ({ expected, nextExpected }: Legion) =>
-  `Next legion in ${getTimeUntilEvent(expected, nextExpected)}.`;
-
-const getHelltide = ({ timestamp }: Helltide) => {
-  const currentTime = getCurrentTime();
-  const active = getFutureTimestamp(timestamp, 1, 0);
-  const timeDifference = active - currentTime;
-
-  return timeDifference <= 0
-    ? `Next Helltide in ${getTimeUntilEvent(timestamp, getFutureTimestamp(timestamp, 2, 15))}.`
-    : `Helltide is active! Time remaining: ${getTimeUntilEvent(active, active)}.`;
+const getProviderInstance = async (): Promise<Provider> => {
+  let provider: Provider;
+  try {
+    const providerInstance = await Promise.any([
+      initProviderInstance(ProviderUrl.D4_ARMORY),
+      initProviderInstance(ProviderUrl.MAXROLL),
+    ]);
+    setCache(CacheKeys.EVENTS, providerInstance);
+    provider = providerInstance;
+  } catch (err) {
+    console.warn(err.message);
+    provider = getCache(CacheKeys.EVENTS);
+  }
+  return provider;
 };
 
 export const getSchedule = async (): Promise<Schedule[]> => {
-  const events = await getEvents();
-  if (!events) return [];
-
-  const { boss, helltide, legion } = events;
+  const provider = await getProviderInstance();
+  if (!provider) return [];
 
   return [
-    { event: 'worldBoss', timestamp: boss.expected, text: getWorldBoss(boss) },
-    { event: 'helltide', timestamp: helltide.timestamp, text: getHelltide(helltide) },
-    { event: 'legion', timestamp: legion.expected, text: getLegion(legion) },
+    { event: 'worldBoss', timestamp: provider.getWorldBossTimestamp(), text: provider.transformWorldboss() },
+    { event: 'helltide', timestamp: provider.getHelltideTimestamp(), text: provider.transformHelltide() },
+    { event: 'legion', timestamp: provider.getLegionTimestamp(), text: provider.transformLegion() },
   ];
 };

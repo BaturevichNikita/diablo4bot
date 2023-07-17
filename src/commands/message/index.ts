@@ -2,5 +2,6 @@ import { echoCommand } from './echo';
 import { scheduleCommand } from './schedule';
 import { subscribeCommand } from './subscribe';
 import { unsubscribeCommand } from './unsubscribe';
+import { startCommand } from './start';
 
-export { echoCommand, scheduleCommand, subscribeCommand, unsubscribeCommand };
+export { startCommand, echoCommand, scheduleCommand, subscribeCommand, unsubscribeCommand };
