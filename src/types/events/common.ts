@@ -1,4 +1,4 @@
-export type Boss = {
+export type WorldBoss = {
   name: string;
   expectedName: string;
   nextExpectedName: string;
@@ -9,22 +9,10 @@ export type Boss = {
   zone: string;
 };
 
-export type Helltide = {
-  timestamp: number;
-  zone: string;
-  refresh: number;
-};
-
 export type Legion = {
   timestamp: number;
   territory: string;
   zone: string;
   expected: number;
   nextExpected: number;
-};
-
-export type Events = {
-  boss: Boss;
-  helltide: Helltide;
-  legion: Legion;
 };

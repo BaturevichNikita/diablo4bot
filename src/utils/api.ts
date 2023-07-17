@@ -16,6 +16,8 @@ const apiCall = async <T>(
     [HttpMethods.DELETE]: () => del<T>(_url, _headers, _payload),
   };
 
+  console.log(`Making ${_method} api call to ${_url}`);
+
   const { data, status } = await httpMethodsMap[_method]();
   return { data, status };
 };

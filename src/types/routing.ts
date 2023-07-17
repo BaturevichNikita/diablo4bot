@@ -4,6 +4,7 @@ export type Path = string;
 export type Command = (chatId: Chat['id'], text?: string) => Promise<void>;
 
 export enum MessagePaths {
+  START = '/start',
   SCHEDULE = '/schedule',
   SUBSCRIBE = '/subscribe',
   UNSUBSCRIBE = '/unsubscribe',

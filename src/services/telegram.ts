@@ -1,5 +1,5 @@
 import { TOKEN } from '../config';
-import { apiCall } from '../integration/api';
+import { apiCall } from '../utils/api';
 import { HttpMethods } from '../types/http';
 import { Chat } from '../types/telegram';
 
