@@ -1,5 +1,3 @@
-import { backCommand } from './back';
-import { subscribeCommand } from './subscribe';
-import { unsubscribeCommand } from './unsubscribe';
+import { notificationsCommand } from './notifications';
 
-export { backCommand, subscribeCommand, unsubscribeCommand };
+export { notificationsCommand };

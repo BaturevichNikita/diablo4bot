@@ -1,10 +1,36 @@
-import { CallbackPaths } from '../types/routing';
+import { CallbackPaths, NotificationEvents, NotificationStatus } from '../types/routing';
 
-export const getReplyMarkup = (callbackType: CallbackPaths) => ({
+export const notificationKeyboard = () => ({
   inline_keyboard: [
-    [{ text: 'World Boss', callback_data: `${callbackType}-world_boss` }],
-    [{ text: 'Helltide', callback_data: `${callbackType}-helltide` }],
-    [{ text: 'Legion', callback_data: `${callbackType}-legion` }],
-    [{ text: 'Back', callback_data: 'back' }],
+    [
+      {
+        text: 'World Boss turn on',
+        callback_data: `${CallbackPaths.NOTIFICATIONS}-${NotificationEvents.WORLD_BOSS}-${NotificationStatus.TURN_ON}`,
+      },
+      {
+        text: 'World Boss turn off',
+        callback_data: `${CallbackPaths.NOTIFICATIONS}-${NotificationEvents.WORLD_BOSS}-${NotificationStatus.TURN_OFF}`,
+      },
+    ],
+    [
+      {
+        text: 'Helltide turn on',
+        callback_data: `${CallbackPaths.NOTIFICATIONS}-${NotificationEvents.HELLTIDE}-${NotificationStatus.TURN_ON}`,
+      },
+      {
+        text: 'Helltide turn off',
+        callback_data: `${CallbackPaths.NOTIFICATIONS}-${NotificationEvents.HELLTIDE}-${NotificationStatus.TURN_OFF}`,
+      },
+    ],
+    [
+      {
+        text: 'Legion turn on',
+        callback_data: `${CallbackPaths.NOTIFICATIONS}-${NotificationEvents.LEGION}-${NotificationStatus.TURN_ON}`,
+      },
+      {
+        text: 'Legion turn off',
+        callback_data: `${CallbackPaths.NOTIFICATIONS}-${NotificationEvents.LEGION}-${NotificationStatus.TURN_OFF}`,
+      },
+    ],
   ],
 });

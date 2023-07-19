@@ -1,8 +1,7 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, UpdateCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, UpdateCommand, ScanCommand, GetCommand } from '@aws-sdk/lib-dynamodb';
 import { SUBSCRIPTION_TABLE_NAME } from '../config';
-import { SubscriptionRecord, UpdateSubscriptionsPayload } from '../types/dynamodb';
-import { CacheKeys, deleteCache, getCache, hasCache, setCache } from '../utils/cache';
+import { GetSubscriptionPayload, SubscriptionRecord, UpdateSubscriptionsPayload } from '../types/dynamodb';
 
 const client = new DynamoDBClient({ region: 'eu-north-1' });
 const docClient = DynamoDBDocumentClient.from(client);
@@ -13,30 +12,33 @@ export const updateSubscription = async ({ chatId, eventType, event }: UpdateSub
   };
   const UpdateExpression = `SET ${event.key} = :${event.key}`;
 
-  const params = {
+  const command = new UpdateCommand({
     TableName: SUBSCRIPTION_TABLE_NAME!,
     Key: { chatId, eventType },
     ExpressionAttributeValues,
     UpdateExpression,
     ReturnValues: 'NONE',
-  };
+    ReturnConsumedCapacity: 'TOTAL',
+  });
 
-  console.info({ params }, 'Update item params');
+  console.info(command, 'Update item comand');
 
-  const command = new UpdateCommand(params);
-  const result = await docClient.send(command);
+  const response = await docClient.send(command);
+  console.log(response.ConsumedCapacity, `DynamoDb updateSubscription consumed capacity`);
+};
 
-  deleteCache(CacheKeys.DB_SUBSCRIPTIONS);
-
-  return result;
+export const getSubscription = async ({ chatId, eventType }: GetSubscriptionPayload): Promise<SubscriptionRecord> => {
+  const command = new GetCommand({
+    TableName: SUBSCRIPTION_TABLE_NAME!,
+    Key: { chatId, eventType },
+    ReturnConsumedCapacity: 'TOTAL',
+  });
+  const response = await docClient.send(command);
+  console.log(response.ConsumedCapacity, `DynamoDb getSubscription consumed capacity`);
+  return response.Item as SubscriptionRecord;
 };
 
 export const getSubscriptions = async (): Promise<SubscriptionRecord[]> => {
-  if (hasCache(CacheKeys.DB_SUBSCRIPTIONS)) {
-    const result = getCache(CacheKeys.DB_SUBSCRIPTIONS);
-    return result;
-  }
-
   const command = new ScanCommand({
     TableName: SUBSCRIPTION_TABLE_NAME!,
     FilterExpression: 'worldBoss = :worldBoss OR helltide = :helltide OR legion = :legion',
@@ -46,12 +48,10 @@ export const getSubscriptions = async (): Promise<SubscriptionRecord[]> => {
       ':legion': true,
     },
     ConsistentRead: false,
+    ReturnConsumedCapacity: 'TOTAL',
   });
 
   const response = await docClient.send(command);
-  const resultItems = response.Items || [];
-
-  setCache(CacheKeys.DB_SUBSCRIPTIONS, resultItems);
-
-  return resultItems as SubscriptionRecord[];
+  console.log(response.ConsumedCapacity, `DynamoDb getSubscriptions consumed capacity`);
+  return (response.Items || []) as SubscriptionRecord[];
 };

@@ -9,12 +9,12 @@ export const callbackProcessor = async (callbackQuery: CallbackQuery) => {
     },
   } = callbackQuery;
 
-  const path = data.split('-')[0];
+  const [path, event, status] = data.split('-');
 
   const command = CallbackRoutingMap.get(path);
   if (!command) {
     throw new Error('No command is associated with the specified callback path.');
   }
 
-  await command(id, data);
+  await command(id, `${event}-${status}`);
 };

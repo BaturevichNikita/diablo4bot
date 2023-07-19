@@ -12,6 +12,11 @@ export type UpdateSubscriptionsPayload = {
   };
 };
 
+export type GetSubscriptionPayload = {
+  chatId: ChatId;
+  eventType: EventType;
+};
+
 export type SubscriptionRecord = {
   chatId: ChatId;
   eventType: EventType;
