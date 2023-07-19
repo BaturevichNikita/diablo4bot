@@ -1,13 +1,8 @@
 notify:
   handler: src/handlers/notify.handler
   events:
-    # - schedule:
-    #     method: scheduler
-    #     rate:
-    #       - cron(0/5 10-23 ? * * *)
-    #     timezone: Europe/Minsk
     - schedule:
-        method: scheduler
-        rate:
-          - cron(0/5 10-23 ? * * *)
-        timezone: Asia/Tbilisi
+        name: notifyTrigger
+        description: Trigger Lambda every 5 minutes, excluding 00:00-09:00 Europe/Minsk
+        rate: cron(0/5 06-20 ? * * *)
+        enabled: true

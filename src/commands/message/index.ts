@@ -1,7 +1,7 @@
 import { echoCommand } from './echo';
 import { scheduleCommand } from './schedule';
-import { subscribeCommand } from './subscribe';
-import { unsubscribeCommand } from './unsubscribe';
 import { startCommand } from './start';
+import { notificationsCommand } from './notifications';
+import { statusCommand } from './status';
 
-export { startCommand, echoCommand, scheduleCommand, subscribeCommand, unsubscribeCommand };
+export { startCommand, echoCommand, scheduleCommand, notificationsCommand, statusCommand };
