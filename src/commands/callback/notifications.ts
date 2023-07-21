@@ -1,4 +1,4 @@
-import { updateSubscription } from '../../services/dynamodb';
+import { updateNotifications } from '../../services/dynamodb';
 import { tgBot } from '../../services/telegram';
 import { Command, NotificationEvents, NotificationStatus } from '../../types/routing';
 
@@ -39,9 +39,8 @@ export const notificationsCommand: Command = async (id, data) => {
 
   console.log(`${formattedStatus} ${formattedEvent} notifications`);
 
-  await updateSubscription({
+  await updateNotifications({
     chatId: id,
-    eventType: 'non-season',
     event: { key: dbKey, value: status === NotificationStatus.TURN_ON },
   });
 

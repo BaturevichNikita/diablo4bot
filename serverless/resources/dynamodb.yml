@@ -1,18 +1,14 @@
 Resources:
-  SubscriptionsTable:
+  NotificationsTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: ${self:custom.dynamodbSubscriptionsTableName}
+      TableName: ${self:custom.dynamodbNotificationsTableName}
       AttributeDefinitions:
         - AttributeName: chatId
           AttributeType: N
-        - AttributeName: eventType
-          AttributeType: S
       KeySchema:
         - AttributeName: chatId
           KeyType: HASH
-        - AttributeName: eventType
-          KeyType: RANGE
       ProvisionedThroughput:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
