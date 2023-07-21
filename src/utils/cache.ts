@@ -1,5 +1,4 @@
 export enum CacheKeys {
-  DB_SUBSCRIPTIONS = 'subscriptions',
   EVENTS = 'events',
 }
 

@@ -6,7 +6,7 @@ plugins:
   - serverless-plugin-typescript
 
 custom:
-  dynamodbSubscriptionsTableName: ${self:service}-subscriptions
+  dynamodbNotificationsTableName: ${self:service}-notifications
 
 provider:
   name: aws
@@ -27,7 +27,7 @@ provider:
           Resource: "arn:aws:dynamodb:${aws:region}:*:table/*"
   environment:
     TOKEN: ${env:TOKEN}
-    SUBSCRIPTION_TABLE_NAME: ${self:custom.dynamodbSubscriptionsTableName}
+    NOTIFICATIONS_TABLE_NAME: ${self:custom.dynamodbNotificationsTableName}
 
 functions:
   - ${file(./serverless/functions/webhook.yml)}

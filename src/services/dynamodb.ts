@@ -1,20 +1,20 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, UpdateCommand, ScanCommand, GetCommand } from '@aws-sdk/lib-dynamodb';
-import { SUBSCRIPTION_TABLE_NAME } from '../config';
-import { GetSubscriptionPayload, SubscriptionRecord, UpdateSubscriptionsPayload } from '../types/dynamodb';
+import { NOTIFICATIONS_TABLE_NAME } from '../config';
+import { GetNotificationPayload, NotificationRecord, UpdateNotificationsPayload } from '../types/dynamodb';
 
 const client = new DynamoDBClient({ region: 'eu-north-1' });
 const docClient = DynamoDBDocumentClient.from(client);
 
-export const updateSubscription = async ({ chatId, eventType, event }: UpdateSubscriptionsPayload) => {
+export const updateNotifications = async ({ chatId, event }: UpdateNotificationsPayload) => {
   const ExpressionAttributeValues = {
     [`:${event.key}`]: event.value,
   };
   const UpdateExpression = `SET ${event.key} = :${event.key}`;
 
   const command = new UpdateCommand({
-    TableName: SUBSCRIPTION_TABLE_NAME!,
-    Key: { chatId, eventType },
+    TableName: NOTIFICATIONS_TABLE_NAME!,
+    Key: { chatId },
     ExpressionAttributeValues,
     UpdateExpression,
     ReturnValues: 'NONE',
@@ -24,23 +24,23 @@ export const updateSubscription = async ({ chatId, eventType, event }: UpdateSub
   console.info(command, 'Update item comand');
 
   const response = await docClient.send(command);
-  console.log(response.ConsumedCapacity, `DynamoDb updateSubscription consumed capacity`);
+  console.log(response.ConsumedCapacity, `DynamoDb updateNotifications consumed capacity`);
 };
 
-export const getSubscription = async ({ chatId, eventType }: GetSubscriptionPayload): Promise<SubscriptionRecord> => {
+export const getNotification = async ({ chatId }: GetNotificationPayload): Promise<NotificationRecord> => {
   const command = new GetCommand({
-    TableName: SUBSCRIPTION_TABLE_NAME!,
-    Key: { chatId, eventType },
+    TableName: NOTIFICATIONS_TABLE_NAME!,
+    Key: { chatId },
     ReturnConsumedCapacity: 'TOTAL',
   });
   const response = await docClient.send(command);
-  console.log(response.ConsumedCapacity, `DynamoDb getSubscription consumed capacity`);
-  return response.Item as SubscriptionRecord;
+  console.log(response.ConsumedCapacity, `DynamoDb getNotification consumed capacity`);
+  return response.Item as NotificationRecord;
 };
 
-export const getSubscriptions = async (): Promise<SubscriptionRecord[]> => {
+export const getNotifications = async (): Promise<NotificationRecord[]> => {
   const command = new ScanCommand({
-    TableName: SUBSCRIPTION_TABLE_NAME!,
+    TableName: NOTIFICATIONS_TABLE_NAME!,
     FilterExpression: 'worldBoss = :worldBoss OR helltide = :helltide OR legion = :legion',
     ExpressionAttributeValues: {
       ':worldBoss': true,
@@ -52,6 +52,6 @@ export const getSubscriptions = async (): Promise<SubscriptionRecord[]> => {
   });
 
   const response = await docClient.send(command);
-  console.log(response.ConsumedCapacity, `DynamoDb getSubscriptions consumed capacity`);
-  return (response.Items || []) as SubscriptionRecord[];
+  console.log(response.ConsumedCapacity, `DynamoDb getNotifications consumed capacity`);
+  return (response.Items || []) as NotificationRecord[];
 };
